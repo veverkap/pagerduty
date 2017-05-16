@@ -1,18 +1,19 @@
 defmodule PagerDuty.Api.Notifications do
   @moduledoc ~S"""
-  Module encompassing interactions with the notifications API endpoint
-  """  
-  use Tesla
+  Module encompassing interactions with the abilities API endpoint
+  """
+  use PagerDuty.Api.Common
+  require Logger
 
-  plug Tesla.Middleware.BaseUrl, "https://api.pagerduty.com"
-  plug Tesla.Middleware.Headers, %{"Authorization" => "Token token=y_NbAkKc66ryYTWUXYEu", "Accept" => "application/vnd.pagerduty+json;version=2"}
-  plug Tesla.Middleware.JSON
-
-  adapter Tesla.Adapter.Hackney
-
-  def notifications() do
+  def account_notifications(options \\ []) do
+    since = %DateTime{DateTime.utc_now() | day: DateTime.utc_now().day - 10}
+            |> DateTime.to_iso8601
+    until = DateTime.utc_now()
+            |> DateTime.to_iso8601
+    defaults = [timeZone: "UTC", since: since, until: until, filter: "email_notification", include: []]
+    get("/notifications", query: defaults)
     # query_params = [query: [{:"timeZone", time_zone}, {:"since", since}, {:"until", until}, {:"filter", filter}, {:"include[]", include[]}]]  
-    get("/notifications")
+    # get("/notifications")
     # method = [method: :get]
     # url = [url: "/notifications"]
     

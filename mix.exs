@@ -62,7 +62,7 @@ defmodule PagerDuty.Mixfile do
     # These are the default files included in the package
     [
       name: :pagerduty,
-      files: ["lib", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
+      files: ["lib", "mix.exs", "README*"],
       maintainers: ["Patrick Veverka"],
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => "https://github.com/veverkap/pagerduty",

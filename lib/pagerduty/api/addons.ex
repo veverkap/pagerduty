@@ -5,6 +5,10 @@ defmodule PagerDuty.Api.Addons do
   use PagerDuty.Api.Common
   require Logger
 
+  @doc ~S"""
+  List all of your account's addons
+  """
+  @spec account_addons(list(Keyword)) :: list(PagerDuty.Addon)
   def account_addons(options \\ []) do
     defaults = [include_services: false, filter: nil, service_ids: []]
     query = Keyword.merge(defaults, options) |> Enum.into(%{}) |> load_query
@@ -12,6 +16,10 @@ defmodule PagerDuty.Api.Addons do
     all_account_addons(query)
   end
 
+  @doc ~S"""
+  Loads up details about a particular addon
+  """
+  @spec get_addon(binary) :: PagerDuty.Addon
   def get_addon(addon_id) when is_binary(addon_id) do
     get("/addons/" <> addon_id)
     |> handle_response    
