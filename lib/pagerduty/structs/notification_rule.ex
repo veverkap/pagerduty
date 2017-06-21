@@ -10,4 +10,7 @@ defmodule PagerDuty.NotificationRule do
     * `@html_url`: a URL at which the entity is uniquely displayed in the Web app
   """  
   defstruct id: nil, summary: nil, type: nil, self: nil, html_url: nil
+  def new(notification_rule) do
+    user_struct = struct(PagerDuty.NotificationRule, PagerDuty.Utils.atomize(notification_rule))  
+  end
 end

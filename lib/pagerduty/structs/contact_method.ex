@@ -24,5 +24,9 @@ defmodule PagerDuty.ContactMethod do
     html_url: String.t,
     label: String.t, 
     address: String.t
-  }    
+  } 
+
+  def new(contact_method) do
+    struct(PagerDuty.ContactMethod, PagerDuty.Utils.atomize(contact_method))  
+  end
 end

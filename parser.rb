@@ -16,6 +16,7 @@ file["definitions"].each do |key, value|
 
     str << "  ## Attributes\r\n"
 
+    required = value["required"]
     value["properties"].each do |prop|
 
         structdef << "#{prop[0]}: nil"
@@ -60,6 +61,8 @@ file["definitions"].each do |key, value|
         str << " (minimum of #{minimum})" if minimum
         str << "\r\n"
     end
+      str << "\r\n  ## Required\r\n"
+      str << "    * required: #{required}\r\n"
       str << "  \"\"\"\r\n"
       str << "  defstruct #{structdef.join(", ")}\r\n"
       str << "  @type t :: %__MODULE__{\r\n"
@@ -68,7 +71,7 @@ file["definitions"].each do |key, value|
       str << "end"
 
     # puts str.string
-      File.open("./lib/pagerduty/struct/#{key}.sex", "wb") { |file| file.write(str.string) }
+      File.open("../../struct/#{key.downcase}.ex", "wb") { |file| file.write(str.string) }
     # exit
   end
 end

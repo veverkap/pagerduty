@@ -13,7 +13,7 @@ defmodule PagerDuty.Api.Abilities do
   An ability may be available to your account based on things like your
   pricing plan or account state.
   """
-  @spec account_abilities :: list(binary)
+  @spec account_abilities :: list(binary) | {:error, String.t}
   def account_abilities do
     get("/abilities")
     |> handle_response

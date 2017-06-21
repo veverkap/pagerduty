@@ -12,9 +12,24 @@ defmodule PagerDuty.Team do
   ## Attributes
     * `@id`: id
     * `@summary`: A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.
-    * `@type`: either `incident` or `incident_reference`
+    * `@type`: either `team` or `team_reference`
     * `@self`: the API show URL at which the object is accessible 
     * `@html_url`: a URL at which the entity is uniquely displayed in the Web app
-  """  
-  defstruct id: nil, summary: nil, type: nil, self: nil, html_url: nil
+    * `@name`: The name of the team.
+    * `@description`: The description of the team.
+  """
+  defstruct id: nil, summary: nil, type: nil, self: nil, html_url: nil, name: nil, description: nil
+  @type t :: %__MODULE__{
+    id: String.t,
+    summary: String.t,
+    type: String.t,
+    self: String.t,
+    html_url: String.t,
+    name: String.t,
+    description: String.t
+  }
+
+  def new(team) do
+    struct(PagerDuty.Team, PagerDuty.Utils.atomize(team))
+  end  
 end

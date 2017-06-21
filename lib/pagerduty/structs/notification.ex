@@ -30,4 +30,9 @@ defmodule PagerDuty.Notification do
     address: String.t,
     user: PagerDuty.User
   }
+
+  def new(notification) do
+    notification_struct = struct(PagerDuty.Notification, PagerDuty.Utils.atomize(notification))
+    %PagerDuty.Notification{notification_struct | user: PagerDuty.User.new(notification_struct.user)}
+  end  
 end

@@ -23,4 +23,38 @@ defmodule PagerDuty.EscalationTarget do
     html_url: String.t,
     type: String.t
   }
+
+  def new(escalation_target) do
+    struct(PagerDuty.EscalationTarget, PagerDuty.Utils.atomize(escalation_target))
+  end
+
+  @doc """
+  Checks whether the escalation target is valid
+  An escalation target is valid when the id and type are set
+
+  ## Examples
+      iex> target = %PagerDuty.EscalationTarget{}
+      ...> PagerDuty.EscalationTarget.is_valid?(target)
+      false
+
+      iex> target = %PagerDuty.EscalationTarget{type: "blah"}
+      ...> PagerDuty.EscalationTarget.is_valid?(target)
+      false
+
+      iex> target = %PagerDuty.EscalationTarget{type: "user"}
+      ...> PagerDuty.EscalationTarget.is_valid?(target)
+      false
+
+      iex> target = %PagerDuty.EscalationTarget{type: "blah", id: "FFHSD"}
+      ...> PagerDuty.EscalationTarget.is_valid?(target)
+      false
+
+      iex> target = %PagerDuty.EscalationTarget{type: "user", id: "FFHSD"}
+      ...> PagerDuty.EscalationTarget.is_valid?(target)
+      true      
+  """
+  def is_valid?(%PagerDuty.EscalationTarget{id: nil}), do: false
+  def is_valid?(%PagerDuty.EscalationTarget{type: nil}), do: false
+  def is_valid?(%PagerDuty.EscalationTarget{type: type}) when type != "user" and type != "schedule" and type != "user_reference" and type != "schedule_reference", do: false
+  def is_valid?(%PagerDuty.EscalationTarget{id: id, type: type}) when not is_nil(id) and not is_nil(type), do: true
 end

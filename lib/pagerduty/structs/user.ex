@@ -75,6 +75,10 @@ defmodule PagerDuty.User do
   Generates a new `PagerDuty.User` from a map
   """
   def new(user) do
-    struct(PagerDuty.User, PagerDuty.Utils.atomize(user))
+    user_struct = struct(PagerDuty.User, PagerDuty.Utils.atomize(user))
+    %PagerDuty.User{user_struct | teams: Enum.map(user_struct.teams, &PagerDuty.Team.new/1),
+                                  contact_methods: Enum.map(user_struct.contact_methods, &PagerDuty.ContactMethod.new/1),
+                                  notification_rules: Enum.map(user_struct.notification_rules, &PagerDuty.NotificationRule.new/1)
+  }
   end
 end

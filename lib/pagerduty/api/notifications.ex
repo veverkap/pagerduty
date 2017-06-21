@@ -10,20 +10,45 @@ defmodule PagerDuty.Api.Notifications do
             |> DateTime.to_iso8601
     until = DateTime.utc_now()
             |> DateTime.to_iso8601
-    defaults = [timeZone: "UTC", since: since, until: until, filter: "email_notification", include: []]
-    get("/notifications", query: defaults)
-    # query_params = [query: [{:"timeZone", time_zone}, {:"since", since}, {:"until", until}, {:"filter", filter}, {:"include[]", include[]}]]  
-    # get("/notifications")
-    # method = [method: :get]
-    # url = [url: "/notifications"]
-    
-    # header_params = []
-    # body_params = []
-    # form_params = []
-    # params = query_params ++ header_params ++ body_params ++ form_params
-    # opts = []
-    # options = method ++ url ++ params ++ opts
 
-    # request(options)
+
+    IO.inspect since
+    defaults = [timeZone: "UTC", since: since, until: until, filter: nil, include: nil]
+    query = Keyword.merge(defaults, options) 
+            |> Enum.into(%{}) 
+            |> load_query
+
+    get("/notifications", query: query)
+    |> handle_response
   end
+
+  defp handle_response(%Tesla.Env{status: 200, body: %{"notifications" => addons}}) do
+    addons
+    |> Enum.map(&PagerDuty.Notification.new/1)
+  end
+
+  defp handle_response(%Tesla.Env{status: 200, body: body}) do
+    body
+    |> Poison.decode!
+    |> Map.get("notifications") 
+    |> PagerDuty.Notification.new
+  end  
+
+  defp load_query(query = %{include: nil}) do
+     Map.delete(query, :include)
+     |> load_query
+  end
+
+  defp load_query(query = %{include: includes}) do
+    Map.delete(query, :include)
+    |> Map.merge(%{"include" => includes})
+    |> load_query
+  end  
+
+  defp load_query(query = %{filter: filter}) when filter == "sms_notification" or filter == "email_notification" or filter == "phone_notification" or filter == "push_notification" do
+    Map.delete(query, :filter)
+    |> Map.merge(%{"filter" => filter})
+  end
+
+  defp load_query(query = %{filter: _}), do: Map.delete(query, :filter)  
 end
